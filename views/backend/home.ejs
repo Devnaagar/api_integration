@@ -101,6 +101,31 @@
                 }
             });
         });
+        $('#scheduleForm').submit(function(event) {
+            event.preventDefault();
+
+            const intervalDays = parseInt($('#interval').val());
+            const remainTime = $('#remain_time').val();
+            const [hours, minutes] = remainTime.split(':').map(Number);
+
+            const currentDate = new Date();
+            currentDate.setDate(currentDate.getDate() + intervalDays);
+            currentDate.setHours(hours);
+            currentDate.setMinutes(minutes);
+            currentDate.setSeconds(0);
+
+            const currentTime = new Date().getTime();
+            const scheduleTime = currentDate.getTime();
+            const timeout = scheduleTime - currentTime;
+
+            if (timeout > 0) {
+                setTimeout(() => {
+                    alert('Message has been sent');
+                }, timeout);
+            } else {
+                alert('Scheduled time is in the past');
+            }
+        });
     });
 </script>
 
