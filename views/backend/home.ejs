@@ -1,0 +1,107 @@
+<%- include('../defaults/header.ejs') %>
+
+<section class="mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <form method="post" action="/home/submit_lead">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Leads Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="lead_name">Name</label>
+                                <input class="form-control col-md-12" name="lead_name" id="lead_name"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="lead_email">Email</label>
+                                <input class="form-control col-md-12" name="lead_email" id="lead_email"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="lead_phone">Phone</label>
+                                <input class="form-control col-md-12" name="lead_phone" id="lead_phone"/>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <form id="scheduleForm" method="post" action="/home/schedule">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Schedule Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="lead_name">Name</label>
+                                <select id="leadSelect" class="form-control" name="lead_id">
+                                    <option>Choose</option>
+                                    <!-- Options will be dynamically populated via AJAX -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="lead_phone">Phone</label>
+                                <input class="form-control col-md-12" name="lead_phone" id="leadPhone" readonly/>
+                            </div>
+                            
+                            <div class="col-sm-12 d-flex justify-content-between">
+                                <div class="col-sm-5 form-group">
+                                    <label class="form-label" for="interval">Days Interval</label>
+                                    <input class="form-control col-md-12" name="interval" id="interval"/>
+                                </div>
+                                <div class="col-sm-6 form-group">
+                                    <label class="form-label" for="remain_time">Time</label>
+                                    <input class="form-control col-md-12" name="remain_time" id="remain_time"/>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Fetch leads and populate select dropdown
+        $.ajax({
+            url: '/home/get_leads',
+            method: 'GET',
+            success: function(data) {
+                data.forEach(function(lead) {
+                    $('#leadSelect').append(`<option value="${lead.lead_id}">${lead.lead_name}</option>`);
+                });
+            },
+            error: function(err) {
+                console.error('Error fetching leads:', err);
+            }
+        });
+
+        // Fetch and display lead phone number on lead selection
+        $('#leadSelect').change(function() {
+            const leadId = $(this).val();
+            $.ajax({
+                url: `/home/get_lead/${leadId}`,
+                method: 'GET',
+                success: function(data) {
+                    $('#leadPhone').val(data.phone);
+                },
+                error: function(err) {
+                    console.error('Error fetching lead phone number:', err);
+                }
+            });
+        });
+    });
+</script>
+
+<%- include('../defaults/footer.ejs') %>
