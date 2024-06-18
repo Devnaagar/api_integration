@@ -121,18 +121,19 @@
         });
     });
     function checkReminders() {
-            fetch('/home/check-reminders')
+            const leadId = $('#leadSelect').val();
+            fetch(`/home/check-reminders/${leadId}`)
                 .then(response => response.text())
                 .then(data => {
+                    alert(data);
                     console.log(data);
+
                 })
                 .catch(error => {
                     console.error('Error:', error);
                 });
         }
-
-        // Periodically check for reminders every minute
-        setInterval(checkReminders,300000);
+        setInterval(checkReminders,60000);
 </script>
 
 <%- include('../defaults/footer.ejs') %>
