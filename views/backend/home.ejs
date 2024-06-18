@@ -101,32 +101,38 @@
                 }
             });
         });
-        $('#scheduleForm').submit(function(event) {
+        document.getElementById('scheduleForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const intervalDays = parseInt($('#interval').val());
-            const remainTime = $('#remain_time').val();
-            const [hours, minutes] = remainTime.split(':').map(Number);
+            const formData = new FormData(this);
 
-            const currentDate = new Date();
-            currentDate.setDate(currentDate.getDate() + intervalDays);
-            currentDate.setHours(hours);
-            currentDate.setMinutes(minutes);
-            currentDate.setSeconds(0);
-
-            const currentTime = new Date().getTime();
-            const scheduleTime = currentDate.getTime();
-            const timeout = scheduleTime - currentTime;
-
-            if (timeout > 0) {
-                setTimeout(() => {
-                    alert('Message has been sent');
-                }, timeout);
-            } else {
-                alert('Scheduled time is in the past');
-            }
+            fetch('/home/schedule', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert('Schedule created successfully!');
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         });
     });
+    function checkReminders() {
+            fetch('/home/check-reminders')
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Periodically check for reminders every minute
+        setInterval(checkReminders,300000);
 </script>
 
 <%- include('../defaults/footer.ejs') %>

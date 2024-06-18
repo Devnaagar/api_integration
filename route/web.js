@@ -11,5 +11,7 @@ router.post('/submit_lead' ,Add_leads.add_lead );
 router.get('/get_leads',Schedule.schedule);
 
 router.get('/get_lead/:leadId', Schedule.get_phone);
+router.post('/schedule',Schedule.submit_form);
+router.get('/check-reminders',Schedule.checkremain);
 
 export default router;
