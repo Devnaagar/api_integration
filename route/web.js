@@ -13,5 +13,7 @@ router.get('/get_leads',Schedule.schedule);
 router.get('/get_lead/:leadId', Schedule.get_phone);
 router.post('/schedule',Schedule.submit_form);
 router.get('/check-reminders/:leadId',Schedule.checkremain);
+router.get('/send-email/:leadId', Schedule.sendEmail);
+
 
 export default router;
