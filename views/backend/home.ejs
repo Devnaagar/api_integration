@@ -1,5 +1,13 @@
 <%- include('../defaults/header.ejs') %>
-
+<!-- <% var chat %> -->
+<style>
+    .hidden{
+        display: none;
+    }
+    .chat{
+        text-align: center;
+    }
+</style>
 <section class="mt-5">
     <div class="container">
         <div class="row">
@@ -69,9 +77,24 @@
         </div>
     </div>
 </section>
+<div class="<%= !chat ? 'hidden' : '' %> container mt-5 chat" id="chat">
+    <h2>Chat with Us</h2>
+    <p>Would like to sign the engagement letter with Dexterous InfoSolutions?</p>
+    <div class="d-flex justify-content-center"></div>
+    <input type="text" class="form-control" id = "userinput" placeholder="yes/no">
+    <button class="btn btn-primary chat-btn" onclick="chat_func()">Submit</button>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
+    function chat_func(){
+			let a = document.getElementById('userinput').value;
+			if(a == "yes"){
+				window.location.replace("http://www.dextrousinfo.com");
+			}else{
+				window.location.replace("/");
+			}
+		}
     $(document).ready(function() {
         // Fetch leads and populate select dropdown
         $.ajax({
@@ -125,6 +148,10 @@
             fetch(`/home/check-reminders/${leadId}`)
                 .then(response => response.text())
                 .then(data => {
+                    if(data){
+                        var chat = true;
+                        console.log(chat);
+                    }
                     alert(data);
                     console.log(data);
 
