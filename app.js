@@ -7,17 +7,6 @@ import web from './route/web.js';
 const app = express();
 const port = process.env.PORT || '3112';
 
-// database connection 
-// app.get('/', (req, res) => {
-//     db.query('SELECT * FROM leads', (err, results) => {
-//         if (err) {
-//             console.error('Error executing query:', err.stack);
-//             res.status(500).send('Error executing query');
-//             return;
-//         }
-//         res.send(results);
-//     });
-// });
 
 //handle submission
 app.use(bodyParser.urlencoded({ extended: true }));

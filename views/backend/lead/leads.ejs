@@ -1,0 +1,144 @@
+<%- include('../../defaults/header.ejs') %>
+<div class="form-group m-4">
+    <button class="btn btn-outline-info"><a href="/home" class="text-decoration-none">Home</a></button>
+</div>
+<section class="mt-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <form method="post" action="/home/submit_lead">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Leads Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div class="form-group col-md-6">
+                                    <label for="lead_name">Name</label>
+                                    <input class="form-control col-md-12" name="lead_name" id="lead_name" required/>
+                                </div>
+                                <div class="form-group col-md-5">
+                                    <label for="lead_phone">Phone</label>
+                                    <input class="form-control col-md-12" name="lead_phone" id="lead_phone" required/>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="form-group col-md-6">
+                                    <label for="lead_email">Email</label>
+                                    <input class="form-control col-md-12" name="lead_email" id="lead_email" required/>
+                                </div>
+                                <div class="form-group col-md-5">
+                                    <label for="catSelect">Category</label>
+                                    <select id="catSelect" class="form-control" name="catSelect" required>
+                                        <option>Choose</option>
+                                        <!-- Options will be dynamically populated via AJAX -->
+                                    </select>
+                                </div>
+                            </div>                           
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="mt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="table-dark">
+                            <th>Sno.</th>
+                            <th>Category</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone number</th>
+                            <th>Status</th>
+                            <th>Reminder Count</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tbody>
+                            <% var i =1 %>
+                                <% data.forEach(item => { %>
+                                    <tr>
+                                        <td scope="row"><%= i++ %></td>
+                                        <td><%= item.cate_name  %></td>
+                                        <td><%= item.lead_name %></td>
+                                        <td><%= item.email %></td>
+                                        <td><%= item.phone %></td>
+                                        <td class="form-switch">
+                                            <input class="form-check-input ms-3" type="checkbox" role="switch" data-id="<%= item.lead_id %>" data-status="<%= item.status %>" <%= item.status ? 'checked' : '' %>>
+                                        </td>
+                                        <td><%= item.remain_count %></td>
+
+                                        <td>
+                                            <div class="icon d-flex justify-content-between">
+                                                <form method="get" action="/home/edit/<%= item.lead_id%>">
+                                                    <button class="btn" type="submit">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="/home/delete_lead/<%= item.lead_id %>">
+                                                    <button class="btn" type="submit">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        $.ajax({
+            url: '/home/get_cate',
+            method: 'GET',
+            success: function(data) {
+                data.forEach(function(cate) {
+                    $('#catSelect').append(`<option value="${cate.cate_id}">${cate.cate_name}</option>`);
+                });
+            },
+            error: function(err) {
+                console.error('Error fetching leads:', err);
+            }
+        });
+        $('tbody').on('change', '.form-check-input', function() {
+            const id = $(this).data('id');
+            const newStatus = $(this).is(':checked');
+
+            // Send AJAX request to toggle status
+            $.ajax({
+                url: '/home/status',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, status: newStatus }),
+                success: function(response) {
+                    if (!response.success) {
+                        alert('Failed to update status');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+<%- include('../../defaults/footer.ejs') %>

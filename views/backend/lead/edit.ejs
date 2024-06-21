@@ -1,0 +1,74 @@
+<%- include('../../defaults/header.ejs') %>
+<div class="form-group m-4">
+    <button class="btn btn-outline-info"><a href="/home/lead_form" class="text-decoration-none">Back</a></button>
+</div>
+<section class="mt-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <form method="post" action="/home/update_lead/<%= data[0].lead_id%>">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Leads Information</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div class="form-group col-md-6">
+                                    <label for="lead_name">Name</label>
+                                    <input class="form-control col-md-12" name="lead_name" id="lead_name" required value= "<%= data[0].lead_name %>" />
+                                </div>
+                                <div class="form-group col-md-5">
+                                    <label for="lead_phone">Phone</label>
+                                    <input class="form-control col-md-12" name="lead_phone" id="lead_phone" required value= "<%= data[0].phone %>"/>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="form-group col-md-6">
+                                    <label for="lead_email">Email</label>
+                                    <input class="form-control col-md-12" name="lead_email" id="lead_email" required value= "<%= data[0].email %>"/>
+                                </div>
+                                <div class="form-group col-md-5">
+                                    <label for="catSelect">Category</label>
+                                    <select id="catSelect" class="form-control" name="catSelect" required value= "<%= data[0].category_ref %>">
+                                        <!-- <option>Choose</option> -->
+                                        <!-- Options will be dynamically populated via AJAX -->
+                                    </select>
+                                </div>
+                            </div>                           
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        $.ajax({
+            url: '/home/get_cate',
+            method: 'GET',
+            success: function(data) {
+                data.forEach(function(cate) {
+                    $('#catSelect').append(`<option value="${cate.cate_id}">${cate.cate_name}</option>`);
+                });
+            },
+            error: function(err) {
+                console.error('Error fetching leads:', err);
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+<%- include('../../defaults/footer.ejs') %>
