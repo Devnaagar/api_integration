@@ -34,21 +34,14 @@ class Add_leads{
     };
     static changestatus = async (req, res) => {
         const { id, status } = req.body;
-        let today = new Date();
     
         try {
             const updateStatusQuery = 'UPDATE leads SET status = ? WHERE lead_id = ?';
             connection.query(updateStatusQuery, [status,id],(err,result)=>{
                 if (result) {
                     res.json({ success: true, status: result.status });
-                    const updateddate_new= "UPDATE leads SET updatedat =? WHERE lead_id=?";
-                    connection.query(updateddate_new,[today,id],(err,full)=>{
-                        if (err) throw err;
-                        else{
-                            console.log("date updated new current date ");
-                        }
-                    })
-
+                    
+                    Add_leads.update_new_date(id);
                 } else {
                     res.status(404).json({ success: false, message: 'Item not found' });
                 }
@@ -108,6 +101,17 @@ class Add_leads{
         }
 
         res.redirect("/home/lead_form");
+    }
+
+    static update_new_date = async (lead_id)=>{
+        let today = new Date();
+        const updateddate_new= "UPDATE leads SET updatedat =? WHERE lead_id=?";
+        connection.query(updateddate_new,[today,lead_id],(err,full)=>{
+            if (err) throw err;
+            else{
+                console.log("date updated new current date ");
+            }
+        })
     }
     // static checkAndUpdateStatus = async (lead_id) => {
     //     try {

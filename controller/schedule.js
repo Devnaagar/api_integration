@@ -82,7 +82,11 @@ class Schedule{
                 if(err) throw err;
                 else{
                     // console.log(row);
+                    // {data : row};
+                    // console.log(row[0].cate_id_ref);
                     // console.log(req.params.id);
+                    
+                    
                     res.render('backend/edit_schedule.ejs',{data : row});
                 }
             })
@@ -102,6 +106,17 @@ class Schedule{
                 else{
                     // console.log(schedId.params.schedId);
                     // Schedule.update_status(catSelect);
+                    const change = "SELECT lead_id FROM leads WHERE category_ref=?"
+                    connection.query(change,[catSelect2],(erroe,lead_idddd)=>{
+                        if (erroe) throw erroe;
+                        else{
+                            // console.log(lead_idddd);
+                            lead_idddd.forEach(element => {
+                                Add_leads.update_new_date(element.lead_id);
+                                
+                            });
+                        }
+                    })
                     console.log("update schedule data");
                     res.redirect('/home');
                 }
