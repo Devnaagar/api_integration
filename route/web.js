@@ -32,6 +32,8 @@ router.get('/get_cate',Category.schedule);
 
 
 router.get('/reminder',Reminder.storeRemin);
+// router.get('/send',Reminder.sendEmail([42,40],111));
+
 // router.get('/check-reminders/:leadId',Schedule.checkremain);
 // router.get('/send-email/:leadId', Schedule.sendEmail);
 

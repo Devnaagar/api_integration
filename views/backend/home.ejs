@@ -189,42 +189,7 @@
                 console.error('Error fetching leads:', err);
             }
         });
-        // document.getElementById('scheduleForm').addEventListener('submit', function (event) {
-        //     event.preventDefault();
-
-        //     const formData = new FormData(this);
-
-        //     fetch('/home/schedule', {
-        //         method: 'POST',
-        //         body: new URLSearchParams(formData)
-        //     })
-        //     .then(response => response.text())
-        //     .then(data => {
-        //         alert('Schedule created successfully!');
-        //         console.log(data);
-        //     })
-        //     .catch(error => {
-        //         console.error('Error:', error);
-        //     });
-        // });
     });
-    // function checkReminders() {
-    //         const leadId = $('#leadSelect').val();
-    //         fetch(`/home/check-reminders/${leadId}`)
-    //             .then(response => response.text())
-    //             .then(data => {
-    //                 if(data){
-    //                     var chat = true;
-    //                     console.log(chat);
-    //                 }
-    //                 alert(data);
-    //                 console.log(data);
-    //             })
-    //             .catch(error => {
-    //                 console.error('Error:', error);
-    //             });
-    //     }
-    // setInterval(checkReminders,60000);
 </script>
 
 <%- include('../defaults/footer.ejs') %>
