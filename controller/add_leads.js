@@ -6,7 +6,7 @@ import Schedule from './schedule.js';
 class Add_leads{
 
     static lead_form = (req,res)=>{
-        const collect = "SELECT leads.lead_id,leads.lead_name,leads.email,leads.phone,leads.status,leads.remain_count,category.cate_name FROM leads LEFT JOIN category ON leads.category_ref = category.cate_id";
+        const collect = "SELECT leads.lead_id,leads.lead_name,leads.email,leads.phone,leads.status,leads.remin_count,category.cate_name FROM leads LEFT JOIN category ON leads.category_ref = category.cate_id";
         connection.query(collect,(err,result)=>{
             if (err) throw err;
             else{
@@ -113,6 +113,40 @@ class Add_leads{
             }
         })
     }
+    static updateLeadRemainCount = async (lead_id) => {
+        try {
+            // Query to get the last remain_count for the given lead_id from schedule_table
+            const getLastRemainCountQuery = 'SELECT MAX(remin_count) AS last_remain_count FROM reminder_table WHERE lead_ref_id = ?';
+
+            // Promisify the query to await its completion
+            const lastRemainCountResult = await new Promise((resolve, reject) => {
+                connection.query(getLastRemainCountQuery, [lead_id], (err, results) => {
+                    if (err) {
+                        console.error('Error fetching last remain count:', err);
+                        reject(err);
+                    } else {
+                        resolve(results[0].last_remain_count);
+                    }
+                });
+            });
+
+            // Update the remain_count in leads table with the last remain_count
+            const updateRemainCountQuery = 'UPDATE leads SET remin_count = ? WHERE lead_id = ?';
+            await new Promise((resolve, reject) => {
+                connection.query(updateRemainCountQuery, [lastRemainCountResult, lead_id], (err, result) => {
+                    if (err) {
+                        console.error('Error updating remain_count in leads table:', err);
+                        reject(err);
+                    } else {
+                        console.log('Remain count updated in leads table for lead_id:', lead_id);
+                        resolve();
+                    }
+                });
+            });
+        } catch (err) {
+            console.error('Error updating lead remain count:', err);
+        }
+    };
 }
 export default Add_leads;
 
