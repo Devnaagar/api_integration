@@ -15,7 +15,7 @@ class Schedule{
             else{
                 // Schedule.update_status(catSelect);
 
-                res.render("backend/home.ejs",{data:result});
+                res.render("backend/schedule/home.ejs",{data:result});
                 // console.log(result);
             }
         })
@@ -36,7 +36,7 @@ class Schedule{
                 }
             });
             console.log('Date inserted'); 
-            res.redirect('/home');
+            res.redirect('/home/schedule');
 
         } catch (error) {
             console.error('Error:', err);
@@ -80,7 +80,7 @@ class Schedule{
                 if(err) throw err;
                 else{
                     
-                    res.render('backend/edit_schedule.ejs',{data : row});
+                    res.render('backend/schedule/edit_schedule.ejs',{data : row});
                 }
             })
             //console.log(result);
@@ -111,7 +111,7 @@ class Schedule{
                         }
                     })
                     console.log("update schedule data");
-                    res.redirect('/home');
+                    res.redirect('/home/schedule');
                 }
             })
         } catch (error) {
@@ -125,10 +125,10 @@ class Schedule{
             const result = "DELETE FROM schedule_table WHERE sched_id=?";
             connection.query(result,[schedId.params.schedId]);
         } catch (error) {
-            console.log(error);
+            console.log("cant delete this");
         }
 
-        res.redirect("/home");
+        res.redirect("/home/schedule");
     }
 
 }

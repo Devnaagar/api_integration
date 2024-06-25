@@ -6,10 +6,11 @@ import Schedule from "../controller/schedule.js";
 import Category from "../controller/categ.js";
 import Reminder from "../controller/reminder.js";
 
-// router.get('/', (req, res) => {
-//     res.render('backend/home.ejs');
-// });
+router.get('/', (req, res) => {
+    res.render('backend/dashboard.ejs');
+});
 //category
+router.get('/category',Category.show_cate);
 router.post('/add_cate',Category.add_cate);
 
 //leads
@@ -21,7 +22,7 @@ router.post('/delete_lead/:leadId', Add_leads.deleteleadbyID);
 router.post('/submit_lead' ,Add_leads.add_lead );
 
 //schedule
-router.get('/' ,Schedule.getSchedule );
+router.get('/schedule' ,Schedule.getSchedule );
 router.get('/edit_schedule/:schedId', Schedule.editschedule);
 router.post('/update_schedule/:schedId', Schedule.update_schedule);
 router.post('/delete_schedule/:schedId', Schedule.delete_schedule);
@@ -33,6 +34,7 @@ router.get('/get_cate',Category.schedule);
 
 router.get('/reminder',Reminder.storeRemin);
 router.get('/view_schedule/:schedId',Reminder.show_remin);
+// router.post('/delete_reminder/:reminleadID/:reminschedID',Reminder.deleteremin)
 
 
 export default router;

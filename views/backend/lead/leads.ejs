@@ -1,98 +1,106 @@
 <%- include('../../defaults/header.ejs') %>
-<div class="form-group m-4">
-    <button class="btn btn-outline-info"><a href="/home" class="text-decoration-none">Home</a></button>
-</div>
-<section class="mt-2">
+
+<style>
+    
+</style>
+<br><br>
+<section class="mt-5">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <form method="post" action="/home/submit_lead">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Leads Information</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div class="form-group col-md-6">
-                                    <label for="lead_name">Name</label>
-                                    <input class="form-control col-md-12" name="lead_name" id="lead_name" required/>
-                                </div>
-                                <div class="form-group col-md-5">
-                                    <label for="lead_phone">Phone</label>
-                                    <input class="form-control col-md-12" name="lead_phone" id="lead_phone" required/>
-                                </div>
+        <div class="page-inner">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form method="post" action="/home/submit_lead">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Leads Information</h4>
                             </div>
-                            <div class="d-flex justify-content-between">
-                                <div class="form-group col-md-6">
-                                    <label for="lead_email">Email</label>
-                                    <input class="form-control col-md-12" name="lead_email" id="lead_email" required/>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div class="form-group col-md-6">
+                                        <label for="lead_name">Name</label>
+                                        <input class="form-control col-md-12" name="lead_name" id="lead_name" required/>
+                                    </div>
+                                    <div class="form-group col-md-5">
+                                        <label for="lead_phone">Phone</label>
+                                        <input class="form-control col-md-12" name="lead_phone" id="lead_phone" required/>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-5">
-                                    <label for="catSelect">Category</label>
-                                    <select id="catSelect" class="form-control" name="catSelect" required>
-                                        <option>Choose</option>
-                                        <!-- Options will be dynamically populated via AJAX -->
-                                    </select>
-                                </div>
-                            </div>                           
+                                <div class="d-flex justify-content-between">
+                                    <div class="form-group col-md-6">
+                                        <label for="lead_email">Email</label>
+                                        <input class="form-control col-md-12" name="lead_email" id="lead_email" required/>
+                                    </div>
+                                    <div class="form-group col-md-5">
+                                        <label for="catSelect">Category</label>
+                                        <select id="catSelect" class="form-control" name="catSelect" required>
+                                            <option>Choose</option>
+                                            <!-- Options will be dynamically populated via AJAX -->
+                                        </select>
+                                    </div>
+                                </div>                           
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
+
         </div>
     </div>
 </section>
-<section class="mt-4">
+<section class="mt-2">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class="table-dark">
-                            <th>Sno.</th>
-                            <th>Category</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone number</th>
-                            <th>Status</th>
-                            <th>Reminder Count</th>
-                            <th>Actions</th>
-                        </thead>
-                        <tbody>
-                            <% var i =1 %>
-                                <% data.forEach(item => { %>
-                                    <tr>
-                                        <td scope="row"><%= i++ %></td>
-                                        <td><%= item.cate_name  %></td>
-                                        <td><%= item.lead_name %></td>
-                                        <td><%= item.email %></td>
-                                        <td><%= item.phone %></td>
-                                        <td class="form-switch">
-                                            <input class="form-check-input ms-3" type="checkbox" role="switch" data-id="<%= item.lead_id %>" data-status="<%= item.status %>" <%= item.status ? 'checked' : '' %>>
-                                        </td>
-                                        <td><%= item.remin_count %></td>
+        <div class="page-inner">
 
-                                        <td>
-                                            <div class="icon d-flex justify-content-between">
-                                                <form method="get" action="/home/edit/<%= item.lead_id%>">
-                                                    <button class="btn" type="submit">
-                                                        <i class="fa-solid fa-pen-to-square"></i>
-                                                    </button>
-                                                </form>
-                                                <form method="post" action="/home/delete_lead/<%= item.lead_id %>">
-                                                    <button class="btn" type="submit">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <% }); %>
-                        </tbody>
-                      </table>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="table-dark">
+                                <th>Sno.</th>
+                                <th>Category</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone number</th>
+                                <th>Status</th>
+                                <th>Reminder Count</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                <% var i =1 %>
+                                    <% data.forEach(item => { %>
+                                        <tr>
+                                            <td scope="row"><%= i++ %></td>
+                                            <td><%= item.cate_name  %></td>
+                                            <td><%= item.lead_name %></td>
+                                            <td><%= item.email %></td>
+                                            <td><%= item.phone %></td>
+                                            <td class="form-switch">
+                                                <input class="form-check-input ms-3" type="checkbox" role="switch" data-id="<%= item.lead_id %>" data-status="<%= item.status %>" <%= item.status ? 'checked' : '' %>>
+                                            </td>
+                                            <td><%= item.remin_count %></td>
+    
+                                            <td>
+                                                <div class="icon d-flex justify-content-between">
+                                                    <form method="get" action="/home/edit/<%= item.lead_id%>">
+                                                        <button class="btn" type="submit">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form method="post" action="/home/delete_lead/<%= item.lead_id %>">
+                                                        <button class="btn" type="submit">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                            </tbody>
+                          </table>
+                    </div>
                 </div>
             </div>
         </div>
