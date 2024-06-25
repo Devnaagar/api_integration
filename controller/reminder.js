@@ -3,6 +3,8 @@ import schedule from 'node-schedule';
 import Add_leads from "../controller/add_leads.js";
 import http from "http";
 import nodemailer from "nodemailer";
+import ejs from 'ejs';
+// import { error } from 'console';
 
 
 class Reminder {
@@ -12,7 +14,7 @@ class Reminder {
             FROM schedule_table 
             LEFT JOIN leads ON schedule_table.cate_id_ref = leads.category_ref`;
 
-        schedule.scheduleJob('*/5 * * * *', async () => {
+        schedule.scheduleJob('* * * * *', async () => {
             console.log('Checking for scheduled functions');
             connection.query(schID, (err, output) => {
                 if (err) {
@@ -55,7 +57,7 @@ class Reminder {
         // console.log(scheduled);
         try {
             const lead_info = "SELECT * FROM leads WHERE lead_id=?";
-            connection.query(lead_info, [scheduled.lead_id], (err, info) => {
+            connection.query(lead_info, [scheduled.lead_id], async (err, info) => {
                 if (err) throw err;
                 else {
                     let istOffset = 5.5 * 60 * 60 * 1000;
@@ -67,7 +69,7 @@ class Reminder {
                         SELECT * FROM reminder_table 
                         WHERE lead_ref_id = ? AND sched_ref_id = ?`;
                     
-                    connection.query(checkQuery, [info[0].lead_id, scheduled.sched_id], (checkErr, checkResults) => {
+                    connection.query(checkQuery, [info[0].lead_id, scheduled.sched_id], async (checkErr, checkResults) => {
                         if (checkErr) {
                             throw checkErr;
                         } else if (checkResults.length > 0) {
@@ -79,7 +81,7 @@ class Reminder {
                                 SELECT * FROM reminder_table 
                                 WHERE lead_ref_id = ?`;
                             
-                            connection.query(leadCheckQuery, [info[0].lead_id], (leadCheckErr, leadCheckResults) => {
+                            connection.query(leadCheckQuery, [info[0].lead_id], async (leadCheckErr, leadCheckResults) => {
                                 if (leadCheckErr) {
                                     throw leadCheckErr;
                                 } else {
@@ -90,11 +92,11 @@ class Reminder {
                                     }
                                     
                                     // Insert new record with updated remin_count
-                                    const insertQuery = `
+                                     const insertQuery = `
                                         INSERT INTO reminder_table (lead_ref_id, sched_ref_id, remin_time, remin_date, remin_status, remin_count) 
                                         VALUES (?, ?, ?, ?, ?, ?)`;
                                     
-                                    connection.query(insertQuery, [info[0].lead_id, scheduled.sched_id, scheduled.sched_time, remin_date, true, remin_count], (insertErr, insertResults) => {
+                                    connection.query(insertQuery, [info[0].lead_id, scheduled.sched_id, scheduled.sched_time, remin_date, true, remin_count], async (insertErr, insertResults) => {
                                         if (insertErr) {
                                             if (insertErr.code === 'ER_DUP_ENTRY') {
                                                 console.log(`Duplicate entry ignored for lead_ref_id: ${info[0].lead_id} and sched_ref_id: ${scheduled.sched_id}`);
@@ -103,9 +105,9 @@ class Reminder {
                                             }
                                         } else {
                                             console.log(`New reminder inserted for lead_ref_id: ${info[0].lead_id} with remin_count: ${remin_count}`);
-                                            Add_leads.update_new_date(info[0].lead_id);
-                                            Add_leads.updateLeadRemainCount(info[0].lead_id);
-                                            Reminder.sendEmail(info[0].lead_id,scheduled.sched_id)
+                                            await Add_leads.updateLeadRemainCount(info[0].lead_id);
+                                            await Reminder.sendEmail(info[0].lead_id,scheduled.sched_id)
+                                            await Add_leads.update_new_date(info[0].lead_id);
                                         }
                                     });
                                 }
@@ -129,6 +131,17 @@ class Reminder {
                 response.end("Internal Server Error");
                 return;
             }
+            // Function to render EJS template
+            function renderEjsTemplate(filePath, data) {
+                return new Promise((resolve, reject) => {
+                ejs.renderFile(filePath, data, (err, str) => {
+                    if (err) {
+                    return reject(err);
+                    }
+                    resolve(str);
+                });
+                });
+            }
 
             const temp_ret = "SELECT template FROM schedule_table WHERE sched_id = ?";
             connection.query(temp_ret, [sched_id], async (ers, temp) => {
@@ -146,13 +159,13 @@ class Reminder {
 
                     for (const row of result) {
                         try {
-                            let new_temp = temp[0].template.replace("<username>", row.lead_name);
+                            const emailText = await renderEjsTemplate("template/template.ejs",{username: row.lead_name,content : temp[0].template});
 
                             const receiver = {
                                 from: "mailtest20242003@gmail.com",
                                 to: row.email,
                                 subject: "Node.js Mail",
-                                text: new_temp
+                                text: emailText
                             };
 
                             await auth.sendMail(receiver);
@@ -168,20 +181,25 @@ class Reminder {
 
     static show_remin= async(sched_id,res)=>{
         try {
-            const all_data = "SELECT * FROM reminder_table WHERE sched_ref_id = ?";
+            const all_data = `
+                SELECT reminder_table.sched_ref_id, reminder_table.lead_ref_id, reminder_table.remin_time,reminder_table.remin_date, leads.lead_name, leads.email,reminder_table.remin_status 
+                FROM reminder_table 
+                LEFT JOIN schedule_table ON reminder_table.sched_ref_id = schedule_table.sched_id
+                LEFT JOIN leads ON reminder_table.lead_ref_id = leads.lead_id
+                WHERE sched_ref_id = ?`; 
             connection.query(all_data,[sched_id.params.schedId],(err,response)=>{
                 if (err) throw err;
                 else{
-                    console.log(response);
-                    res.render("backend/view_remin.ejs",{data:response})
+                    // console.log(response);
+                    res.render("backend/schedule/view_remin.ejs",{data:response})
                 }
-
             })
         } catch (error) {
-            
+            console.log("someproblem occur");
         }
 
     }
+
 }
 
 export default Reminder;

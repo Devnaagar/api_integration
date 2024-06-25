@@ -4,6 +4,17 @@ import connection from '../db/connectdb.js';
 
 class Category{
 
+  static show_cate = (req,res)=>{
+    const show_cate = "SELECT * FROM category";
+    connection.query(show_cate,(err,rows)=>{
+      if(err) throw err;
+      else{
+        res.render('backend/category/category.ejs',{data:rows});
+      }
+    })
+
+  }
+
     static add_cate= (req, res) => {
         const catName = req.body.catname;
         const query = 'INSERT INTO category (cate_name) VALUES (?)';
@@ -15,7 +26,7 @@ class Category{
             return;
           }
         //   console.log('Category added:', catName);
-          res.redirect('/home'); // Redirect to a desired page after submission
+          res.redirect('/category'); // Redirect to a desired page after submission
         });
       };
 
