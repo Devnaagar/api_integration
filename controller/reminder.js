@@ -1,10 +1,8 @@
 import connection from '../db/connectdb.js';
 import schedule from 'node-schedule';
 import Add_leads from "../controller/add_leads.js";
-import http from "http";
 import nodemailer from "nodemailer";
 import ejs from 'ejs';
-// import { error } from 'console';
 
 
 class Reminder {
@@ -29,8 +27,6 @@ class Reminder {
 
     static scheduleReminders(data) {
         const scheduledJobs = new Set();
-        // console.log(data);
-        // console.log("hellooooooo");
         data.forEach(element => {
             const { sched_id, cate_id_ref, days_interval, sched_time, lead_id, updatedat } = element;
             const updatedDate = new Date(updatedat);
@@ -39,14 +35,11 @@ class Reminder {
             updatedDate.setHours(hours, minutes, seconds, 0);
 
             const jobId = `${lead_id}-${sched_id}`;
-            // console.log(jobId);
             if (!scheduledJobs.has(jobId)) {
                 scheduledJobs.add(jobId);
                 schedule.scheduleJob(updatedDate, () => {
-                    // console.log("helloo");
                     Reminder.add_reminder(element);
                 });
-                // console.log(scheduledJobs);
             } else{
                 console.log("repeated data");
             }
@@ -54,7 +47,6 @@ class Reminder {
     }
 
     static add_reminder(scheduled) {
-        // console.log(scheduled);
         try {
             const lead_info = "SELECT * FROM leads WHERE lead_id=?";
             connection.query(lead_info, [scheduled.lead_id], async (err, info) => {
@@ -63,8 +55,6 @@ class Reminder {
                     let istOffset = 5.5 * 60 * 60 * 1000;
                     let new_updatedat = new Date(info[0].updatedat.getTime() + istOffset);
                     let remin_date = new_updatedat.toISOString().split('T')[0];
-        
-                    // Check if the combination of lead_ref_id and sched_ref_id exists
                     const checkQuery = `
                         SELECT * FROM reminder_table 
                         WHERE lead_ref_id = ? AND sched_ref_id = ?`;
@@ -73,10 +63,8 @@ class Reminder {
                         if (checkErr) {
                             throw checkErr;
                         } else if (checkResults.length > 0) {
-                            // Entry already exists, deny insertion
                             console.log(`Duplicate entry denied for lead_ref_id: ${info[0].lead_id} and sched_ref_id: ${scheduled.sched_id}`);
                         } else {
-                            // Entry does not exist, check if lead_ref_id exists
                             const leadCheckQuery = `
                                 SELECT * FROM reminder_table 
                                 WHERE lead_ref_id = ?`;
@@ -85,9 +73,8 @@ class Reminder {
                                 if (leadCheckErr) {
                                     throw leadCheckErr;
                                 } else {
-                                    let remin_count = 1; // Default remin_count value
+                                    let remin_count = 1;
                                     if (leadCheckResults.length > 0) {
-                                        // lead_ref_id exists, increment remin_count
                                         remin_count = leadCheckResults[0].remin_count + 1;
                                     }
                                     
@@ -131,7 +118,6 @@ class Reminder {
                 response.end("Internal Server Error");
                 return;
             }
-            // Function to render EJS template
             function renderEjsTemplate(filePath, data) {
                 return new Promise((resolve, reject) => {
                 ejs.renderFile(filePath, data, (err, str) => {
@@ -190,7 +176,6 @@ class Reminder {
             connection.query(all_data,[sched_id.params.schedId],(err,response)=>{
                 if (err) throw err;
                 else{
-                    // console.log(response);
                     res.render("backend/schedule/view_remin.ejs",{data:response})
                 }
             })
