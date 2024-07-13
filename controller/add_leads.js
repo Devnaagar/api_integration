@@ -10,7 +10,6 @@ class Add_leads{
         connection.query(collect,(err,result)=>{
             if (err) throw err;
             else{
-                // Schedule.update_status(catSelect);
 
                 res.render("backend/lead/leads.ejs",{data:result});
             }
@@ -22,7 +21,6 @@ class Add_leads{
         const query = 'INSERT INTO leads (lead_name,email,phone,category_ref ,status) VALUES (?, ?,?, ?,?)';
         connection.query(query, [lead_name, lead_email, lead_phone,catSelect,false], (err, result) => {
             if (err) throw err;
-            // console.log(result);
             else{
                 console.log("lead entered");
                 Schedule.update_status(catSelect);
@@ -30,7 +28,6 @@ class Add_leads{
                 
             }
         });
-        // checkAndUpdateStatus()
     };
     static changestatus = async (req, res) => {
         const { id, status } = req.body;
@@ -53,19 +50,14 @@ class Add_leads{
     };
 
     static editlead =async (lead_id,res) =>{
-        // console.log(lead_id.params.leadId);
         try {
             const result = "SELECT * FROM leads WHERE lead_id=?";
             connection.query(result,[lead_id.params.leadId],(err, row)=>{
                 if(err) throw err;
                 else{
-                    // console.log(row);
-                    // console.log(req.params.id);
                     res.render('backend/lead/edit.ejs',{data : row});
                 }
             })
-            //console.log(result);
-            // res.render("backend/city/edit_city.ejs",{result});
         } catch (error) {
             console.log(error);
         }
@@ -87,12 +79,10 @@ class Add_leads{
         } catch (error) {
             console.log(error);
             }
-        // res.redirect("/admin/city");
                 
 
     }
     static deleteleadbyID =async (req,res) =>{
-        // console.log(req.params.id);
         try {
             const result = "DELETE FROM leads WHERE lead_id=?";
             connection.query(result,[req.params.leadId]);
@@ -115,10 +105,7 @@ class Add_leads{
     }
     static updateLeadRemainCount = async (lead_id) => {
         try {
-            // Query to get the last remain_count for the given lead_id from schedule_table
             const getLastRemainCountQuery = 'SELECT MAX(remin_count) AS last_remain_count FROM reminder_table WHERE lead_ref_id = ?';
-
-            // Promisify the query to await its completion
             const lastRemainCountResult = await new Promise((resolve, reject) => {
                 connection.query(getLastRemainCountQuery, [lead_id], (err, results) => {
                     if (err) {
@@ -129,8 +116,6 @@ class Add_leads{
                     }
                 });
             });
-
-            // Update the remain_count in leads table with the last remain_count
             const updateRemainCountQuery = 'UPDATE leads SET remin_count = ? WHERE lead_id = ?';
             await new Promise((resolve, reject) => {
                 connection.query(updateRemainCountQuery, [lastRemainCountResult, lead_id], (err, result) => {

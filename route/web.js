@@ -34,7 +34,6 @@ router.get('/get_cate',Category.schedule);
 
 router.get('/reminder',Reminder.storeRemin);
 router.get('/view_schedule/:schedId',Reminder.show_remin);
-// router.post('/delete_reminder/:reminleadID/:reminschedID',Reminder.deleteremin)
 
 
 export default router;

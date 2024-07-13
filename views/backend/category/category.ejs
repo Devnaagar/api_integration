@@ -1,9 +1,5 @@
 <%- include('../../defaults/header.ejs') %>
-<style>
-    .row{
-        /* margin: 10px 5px; */
-    }
-</style>
+
 <br><br>
 <section class="mt-5 ">
     <div class="container">
@@ -55,11 +51,9 @@
                                             <td><%=item.cate_name%></td>
                                             <td><%=item.createdat%></td>
                                             <td>
-                                                <!-- <form method="get" action="/home/edit/<%= //item.lead_id%>"> -->
                                                     <button class="btn" type="submit">
                                                         <i class="fa-solid fa-pen-to-square"></i>
                                                     </button>
-                                                <!-- </form> -->
                                             </td>
                                         </tr>
                                     <% }); %> 

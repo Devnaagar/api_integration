@@ -25,8 +25,7 @@ class Category{
             res.status(500).send('Internal Server Error');
             return;
           }
-        //   console.log('Category added:', catName);
-          res.redirect('/category'); // Redirect to a desired page after submission
+          res.redirect('/category');
         });
       };
 

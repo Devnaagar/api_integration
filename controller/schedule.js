@@ -3,9 +3,6 @@ import connection from '../db/connectdb.js';
 import Add_leads from "../controller/add_leads.js";
 
 
-
-import schedule from 'node-schedule';
-
 class Schedule{
 
     static getSchedule= async (req,res)=>{
@@ -13,10 +10,7 @@ class Schedule{
         connection.query(collect,(err,result)=>{
             if (err) throw err;
             else{
-                // Schedule.update_status(catSelect);
-
                 res.render("backend/schedule/home.ejs",{data:result});
-                // console.log(result);
             }
         })
 
@@ -73,7 +67,6 @@ class Schedule{
     };
 
     static editschedule =async (schedId,res) =>{
-        // console.log(lead_id.params.leadId);
         try {
             const result = "SELECT * FROM schedule_table WHERE sched_id=?";
             connection.query(result,[schedId.params.schedId],(err, row)=>{
@@ -83,7 +76,6 @@ class Schedule{
                     res.render('backend/schedule/edit_schedule.ejs',{data : row});
                 }
             })
-            //console.log(result);
         } catch (error) {
             console.log(error);
         }
@@ -97,16 +89,12 @@ class Schedule{
             connection.query(result,[sched_name,interval,remain_time,catSelect2,template_area,schedId.params.schedId],(err,row)=>{
                 if (err) throw err;
                 else{
-                    // console.log(schedId.params.schedId);
-                    // Schedule.update_status(catSelect);
                     const change = "SELECT lead_id FROM leads WHERE category_ref=?"
                     connection.query(change,[catSelect2],(erroe,lead_idddd)=>{
                         if (erroe) throw erroe;
                         else{
-                            // console.log(lead_idddd);
                             lead_idddd.forEach(element => {
                                 Add_leads.update_new_date(element.lead_id);
-                                
                             });
                         }
                     })
@@ -120,7 +108,6 @@ class Schedule{
     }
 
     static delete_schedule =async (schedId,res) =>{
-        // console.log(req.params.id);
         try {
             const result = "DELETE FROM schedule_table WHERE sched_id=?";
             connection.query(result,[schedId.params.schedId]);
